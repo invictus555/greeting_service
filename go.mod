@@ -5,6 +5,8 @@ go 1.18
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
 require (
+	github.com/cloudwego/kitex v0.6.1
+	github.com/hashicorp/consul/api v1.20.0
 	github.com/invictus555/auto_codes/greeting_service_v1 v0.0.0-20230717045740-2d565d30c882
 	github.com/kitex-contrib/registry-consul v0.0.0-20230406075225-7d341f036654
 )
@@ -20,13 +22,11 @@ require (
 	github.com/cloudwego/configmanager v0.2.0 // indirect
 	github.com/cloudwego/fastpb v0.0.4 // indirect
 	github.com/cloudwego/frugal v0.1.6 // indirect
-	github.com/cloudwego/kitex v0.6.1 // indirect
 	github.com/cloudwego/netpoll v0.4.0 // indirect
 	github.com/cloudwego/thriftgo v0.2.11 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/pprof v0.0.0-20220608213341-c488b8fa1db3 // indirect
-	github.com/hashicorp/consul/api v1.20.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/go-hclog v1.3.1 // indirect
 	github.com/hashicorp/go-immutable-radix v1.0.0 // indirect
