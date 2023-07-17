@@ -31,10 +31,10 @@ func main() {
 		new(GreetingServiceImpl),
 		server.WithRegistry(r),
 		server.WithServiceAddr(&net.TCPAddr{
-			IP: net.IPv4(10, 92, 94, 200), Port: 8088,
+			IP: net.IPv4(10, 92, 94, 200), Port: 8089, // 为了在一台机器上多实例测试，可以更改端口
 		}),
 		server.WithRegistryInfo(&registry.Info{ //设置注册信息
-			Weight:      1,                  // 权重
+			Weight:      1,                  // 权重,若为测试带权算法,此处可以修改成不同的值
 			ServiceName: "greeting.service", // 服务名称
 		}),
 	)
