@@ -14,7 +14,7 @@ func (s *GreetingServiceImpl) SayHello(ctx context.Context, req *greeting.Reques
 	// TODO: Your code here...
 	err = nil
 	resp = &greeting.Response{
-		Message: req.Message + ", service port = " + strconv.Itoa(Port),
+		Message: req.Message + ", service comes from port = " + strconv.Itoa(servicePort),
 	}
 	return
 }

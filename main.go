@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Port        = 8088
+	servicePort = 8089
 	consulAddr  = "127.0.0.1:8500"
 	serviceName = "greeting.service"
 )
@@ -33,10 +33,11 @@ func main() {
 		new(GreetingServiceImpl),
 		server.WithRegistry(r),
 		server.WithServiceAddr(&net.TCPAddr{
-			IP: net.IPv4(192, 168, 31, 76), Port: Port, // 为了在一台机器上多实例测试，可以更改端口
+			Port: servicePort, // 可通过修改端口模拟多实例服务
+			IP:   net.IPv4zero,
 		}),
 		server.WithRegistryInfo(&registry.Info{ //设置注册信息
-			Weight:      2,           // 权重,若为测试带权算法,此处可以修改成不同的值
+			Weight:      2,           // 权重,若测试带权类负载均衡算法,不同实例的权重应该不一样
 			ServiceName: serviceName, // 服务名称
 		}),
 	)
