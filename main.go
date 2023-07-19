@@ -2,17 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/invictus555/auto_codes/greeting_service_v1/kitex_gen/greeting"
-	"log"
-	"math/rand"
-	"net"
-	"time"
-
+	"github-Projs/greeting_service/util"
 	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/cloudwego/kitex/server"
 	consulApi "github.com/hashicorp/consul/api"
+	"github.com/invictus555/auto_codes/greeting_service_v1/kitex_gen/greeting"
 	"github.com/invictus555/auto_codes/greeting_service_v1/kitex_gen/greeting/greetingservice"
 	consul "github.com/kitex-contrib/registry-consul"
+	"log"
+	"net"
 )
 
 const (
@@ -32,12 +30,11 @@ func main() {
 		panic("register consul failed")
 	}
 
-	servicePort, err := getAvailablePort()
+	weight := util.GetRandomWeight(1, 5)
+	servicePort, err := util.GetAvailablePort()
 	if err != nil {
-		panic("no available port")
+		panic("no available port, " + err.Error())
 	}
-
-	weight := genRandomWeight(1, 5)
 
 	fmt.Printf("<hello.greeting.service> listen at port = %d, weight = %d\n", servicePort, weight)
 	svr := greetingservice.NewServer(
@@ -62,30 +59,4 @@ func NewGreetingServiceImpl(port int) greeting.GreetingService {
 	impl := new(GreetingServiceImpl)
 	impl.servicePort = port
 	return impl
-}
-
-// 获取随机端口,方便同一测试机多实例部署
-func getAvailablePort() (int, error) {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:0")
-	if err != nil {
-		return 0, err
-	}
-
-	ret, err := net.ListenTCP("tcp", addr)
-	if err != nil {
-		return 0, err
-	}
-
-	defer ret.Close()
-	return ret.Addr().(*net.TCPAddr).Port, nil
-}
-
-func genRandomWeight(min, max int) int {
-	if max < min {
-		min, max = max, min
-	}
-
-	rand.Seed(time.Now().Unix())
-	port := int(rand.Int31n(int32(max-min))) + min
-	return port
 }
