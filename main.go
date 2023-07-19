@@ -17,7 +17,7 @@ import (
 
 const (
 	consulAddr  = "127.0.0.1:8500"
-	serviceName = "greeting.service"
+	serviceName = "hello.greeting.service"
 )
 
 func main() {
@@ -32,8 +32,14 @@ func main() {
 		panic("register consul failed")
 	}
 
-	servicePort := genRandomPort(8800, 8888)
-	fmt.Println("greeting.service port :", servicePort)
+	servicePort, err := getAvailablePort()
+	if err != nil {
+		panic("no available port")
+	}
+
+	weight := genRandomWeight(1, 5)
+
+	fmt.Printf("<hello.greeting.service> listen at port = %d, weight = %d\n", servicePort, weight)
 	svr := greetingservice.NewServer(
 		NewGreetingServiceImpl(servicePort),
 		server.WithRegistry(r),
@@ -42,7 +48,7 @@ func main() {
 			IP:   net.IPv4zero,
 		}),
 		server.WithRegistryInfo(&registry.Info{ //设置注册信息
-			Weight:      3,           // 权重,若测试带权类负载均衡算法,不同实例的权重应该不一样
+			Weight:      weight,      // 权重,若测试带权类负载均衡算法,不同实例的权重应该不一样
 			ServiceName: serviceName, // 服务名称
 		}),
 	)
@@ -59,7 +65,22 @@ func NewGreetingServiceImpl(port int) greeting.GreetingService {
 }
 
 // 获取随机端口,方便同一测试机多实例部署
-func genRandomPort(min, max int) int {
+func getAvailablePort() (int, error) {
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:0")
+	if err != nil {
+		return 0, err
+	}
+
+	ret, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return 0, err
+	}
+
+	defer ret.Close()
+	return ret.Addr().(*net.TCPAddr).Port, nil
+}
+
+func genRandomWeight(min, max int) int {
 	if max < min {
 		min, max = max, min
 	}
